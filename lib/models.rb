@@ -75,7 +75,7 @@ class Entry < Sequel::Model
   end
 
   def stop!
-    update(stopped_at: Time.now)
+    update(stopped_at: Time.now); nil
   end
 
   def seconds
