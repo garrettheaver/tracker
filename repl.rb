@@ -6,7 +6,12 @@ MAKE = 99
 def print_tasks
   system 'clear'
 
-  print "Current Task: %s\n\n" % [@entry ? @entry.task.name : "None"]
+  print "Current Task: %s\n" % [@entry ? @entry.task.name : "None"]
+
+  today = Date.today
+  total = Entry.between(today, today + 1).inject(0){ |t,e| t + e.seconds }
+  print "Tracked Today: %s\n\n" % [Time.at(total).utc.strftime("%H:%M")]
+
   print "Switch To:\n\n"
 
   Task.exclude(hotkey: nil).order(:hotkey).each do |t|
