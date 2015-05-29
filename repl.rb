@@ -28,23 +28,20 @@ def print_stats
   system 'clear'
   print "Stats for all Tasks:\n\n"
 
+  scales = { today: :blue, week: :green, month: :yellow, total: :red }
+
   Task.exclude(hotkey: nil).order(:hotkey).each do |t|
-    vals = { today: :blue, week: :green, month: :yellow, total: :red }.map do |k,v|
-      strftime(t.elapsed(k)).send(v)
-    end
+    vals = scales.map { |k,v| strftime(t.elapsed(k)).send(v) }
     puts "%3s. %s %s %s %s %s" % ([t.hotkey] + vals + [t.name])
   end
 
   print "\n"
 
   Task.where(hotkey: nil).order(:name).each do |t|
-    vals = { today: :blue, week: :green, month: :yellow, total: :red }.map do |k,v|
-      strftime(t.elapsed(k)).send(v)
-    end
+    vals = scales.map { |k,v| strftime(t.elapsed(k)).send(v) }
     puts "%4s %s %s %s %s %s" % ([''] + vals + [t.name])
   end
 
-  print "\n"
   gets
 end
 
