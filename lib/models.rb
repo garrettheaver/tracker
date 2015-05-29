@@ -74,6 +74,11 @@ class Entry < Sequel::Model
       and { stopped_at < e.to_time }
   end
 
+  def_dataset_method(:ephemeral) do
+    where { (Sequel.function(:strftime, "%s", stopped_at) -
+             Sequel.function(:strftime, "%s", started_at)) < 60 }
+  end
+
   def stop!
     update(stopped_at: Time.now); nil
   end
