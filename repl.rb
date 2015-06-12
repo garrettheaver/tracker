@@ -2,9 +2,14 @@ require_relative "./lib/models"
 require "colorize"
 
 EXIT = 0
+HOUR = 60 * 60
 
 def strftime(seconds)
-  Time.at(seconds).utc.strftime("%H:%M")
+  if seconds > 24 * HOUR
+    "%2d:%2d" % [seconds / HOUR, (seconds % HOUR) / 60]
+  else
+    Time.at(seconds).utc.strftime("%H:%M")
+  end
 end
 
 def print_tasks
@@ -28,7 +33,7 @@ def print_stats
   system 'clear'
   print "Stats for all Tasks:\n\n"
 
-  scales = { today: :blue, week: :green, month: :yellow, total: :red }
+  scales = { today: :blue, yesterday: :cyan, this_week: :yellow, last_week: :green }
 
   Task.exclude(hotkey: nil).order(:hotkey).each do |t|
     vals = scales.map { |k,v| strftime(t.elapsed(k)).send(v) }
