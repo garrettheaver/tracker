@@ -36,6 +36,7 @@ class Task < Sequel::Model
 
   def elapsed(from = :total, upto = nil)
     today = Date.today
+    monday = today - ((today.wday - 1) % 7)
 
     dataset =
       case from
@@ -45,10 +46,8 @@ class Task < Sequel::Model
         entries_dataset.between(today - today.day + 1,
           Date.new(today.year, today.month + 1, 1))
       when :last_week
-        monday = (today - today.wday + 1) - 7
-        entries_dataset.between(monday, monday + 7)
+        entries_dataset.between(monday - 7, monday)
       when :this_week
-        monday = today - today.wday + 1
         entries_dataset.between(monday, monday + 7)
       when :yesterday
         entries_dataset.between(today - 1, today)
