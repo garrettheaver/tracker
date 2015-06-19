@@ -28,11 +28,6 @@ class Task < Sequel::Model
   # Calculates the number of seconds which have been spent
   # on this task. Several pre-defined time-frames are
   # available.
-  #
-  # :total => All Time
-  # :month => Since 12:00AM on the 1st
-  # :week => Since 12:00AM on Monday
-  # :today => Since 12:00AM Today
 
   def elapsed(from = :total, upto = nil)
     today = Date.today
@@ -74,7 +69,7 @@ class Entry < Sequel::Model
 
   def_dataset_method(:between) do |s,e|
     where { started_at >= s.to_time }.
-      and { stopped_at < e.to_time }
+      and { started_at < e.to_time }
   end
 
   def_dataset_method(:ephemeral) do
