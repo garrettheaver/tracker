@@ -35,12 +35,24 @@ def print_stats
 
   scales = { today: :blue, yesterday: :cyan, this_week: :yellow, last_week: :green }
 
+  # calculate and display a total for each scale column
+
+  totals = scales.map do |k,v|
+    strftime(Task.inject(0) { |n,t| n + t.elapsed(k) }).send(v)
+  end
+
+  puts "%4s %s %s %s %s\n\n" % ([''] + totals)
+
+  # next output the tasks which have been assigned a hotkey in numeric order
+
   Task.exclude(hotkey: nil).order(:hotkey).each do |t|
     vals = scales.map { |k,v| strftime(t.elapsed(k)).send(v) }
     puts "%3s. %s %s %s %s %s" % ([t.hotkey] + vals + [t.name])
   end
 
   print "\n"
+
+  # finally output the non hotkey tasks in simple name order
 
   Task.where(hotkey: nil).order(:name).each do |t|
     vals = scales.map { |k,v| strftime(t.elapsed(k)).send(v) }
