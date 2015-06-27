@@ -77,8 +77,14 @@ class Entry < Sequel::Model
              Sequel.function(:strftime, "%s", started_at)) < 60 }
   end
 
-  def stop!
-    update(stopped_at: Time.now); nil
+  # Causes this entry to mark itself as complete at the time
+  # of method calling. If the entry is less than 120 seconds
+  # old we consider it meaningless overall and delete it.
+
+  def stop!(ts = Time.now)
+    update(stopped_at: ts)
+    delete if seconds < 120
+    nil
   end
 
   def seconds
